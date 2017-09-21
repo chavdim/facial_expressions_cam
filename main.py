@@ -10,7 +10,7 @@ from keras import backend as K
 from scipy import ndimage # for zooming image
 import matplotlib.pyplot as plt
 from numpy import genfromtxt
-from sklearn.preprocessing import normalize
+
 
 ###########################################################################
 
@@ -24,11 +24,11 @@ from sklearn.preprocessing import normalize
 img_width =48
 img_height =48
 
-trainXfile = "../fer2013/Training/fer2013_px.csv"
-trainYfile  = "../fer2013/Training/fer2013_L.csv"
+trainXfile = "./fer2013/Training/fer2013_px.csv"
+trainYfile  = "./fer2013/Training/fer2013_L.csv"
 #
-testXfile = "../fer2013/PrivateTest/fer2013_PrivateTest_px.csv"
-testYfile = "../fer2013/PrivateTest/fer2013_PrivateTest_L.csv"
+testXfile = "./fer2013/PrivateTest/fer2013_PrivateTest_px.csv"
+testYfile = "./fer2013/PrivateTest/fer2013_PrivateTest_L.csv"
 
 # load data to numpy
 """
@@ -38,7 +38,8 @@ x_train = np.reshape(x_train,(x_train.shape[0],48,48,1))
 y_data = genfromtxt(trainYfile, delimiter=',')
 y_train = np.reshape(y_data,(x_train.shape[0],1))
 y_train = keras.utils.to_categorical(y_train, num_classes)
-
+"""
+"""
 x_test = genfromtxt(testXfile, delimiter=',')
 x_test /= 255
 x_test = np.reshape(x_test,(x_test.shape[0],48,48,1))
@@ -76,17 +77,17 @@ model.compile(loss='categorical_crossentropy',
 # Parameters
 
 # use images starting from:
-start_indx = 700
+start_indx = 1100
 # number of images used
-show_num = 20
+show_num = 100
 #
 #classes that are shown, others are skipped
-show_classes = [3]
+show_classes = [0]
 #class activation maps shown 
-show_feature_maps = [0,3,5]
+show_feature_maps = [0,3,4,5,6]
 #figure size
-fig_width = 10
-fig_height = 10
+fig_width = 12
+fig_height = 12
 
 use_policy = "use all"
 #use_policy = "correct only" #shows only correctly classsified samples
@@ -171,12 +172,17 @@ for indx in range(start_indx,start_indx+show_num):
 
         axs[t+1].set_title(index_to_emotion[i]+" cam",   color=title_color)
         axs[t+1].imshow(img,cmap="gray")
+        axs[t+1].yaxis.set_visible(False)
+        axs[t+1].xaxis.set_visible(False)
         s=all_cams[t]
         axs[t+1].imshow(s,alpha=0.4,cmap=cmap,vmin=-max_maps, vmax=max_maps)
         t+=1
+   
+    plt.subplots_adjust(wspace=0.1, hspace=0.0)
     plt.show()
     ###########################################################################
     ### Log
+    print("image index: ", indx)
     print("classified as: ", index_to_emotion[predicted_index])
     print("ground truth: ", index_to_emotion[ground_truth])
 
